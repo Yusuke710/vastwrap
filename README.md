@@ -1,4 +1,4 @@
-# vastai-connect
+# vastwrap
 
 CLI wrapper for [Vast.ai](https://vast.ai) that simplifies GPU rental workflow. One command to search GPU, rent, ssh, then destroy the instance afterward.
 
