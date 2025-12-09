@@ -10,7 +10,7 @@ uv add vastai
 vastai setup <Enter your API key from VastAI console>  
 
 # Install vastai-connect
-git@github.com:Yusuke710/vastai-connect.git
+https://github.com/Yusuke710/vastwrap.git
 uv sync
 ```
 
