@@ -1,4 +1,4 @@
-# vastwrap
+# vastai-connect
 
 CLI wrapper for [Vast.ai](https://vast.ai) that simplifies GPU rental workflow. One command to search GPU, rent, ssh, then destroy the instance afterward.
 
@@ -7,13 +7,13 @@ CLI wrapper for [Vast.ai](https://vast.ai) that simplifies GPU rental workflow. 
 ```bash
 # Install vastai CLI first
 uv tool install vastai
-vastai set api-key <Enter your API key from https://cloud.vast.ai/manage-keys/>  
+vastai set api-key <Enter your API key from https://cloud.vast.ai/manage-keys/>
 
-# Install vastwrap
-uv tool install git+https://github.com/Yusuke710/vastwrap.git
+# Install vastai-connect
+uv tool install git+https://github.com/Yusuke710/vastai-connect.git
 
 # Update to latest version
-uv tool upgrade vastwrap
+uv tool upgrade vastai-connect
 ```
 
 ## SSH Key Setup
@@ -44,7 +44,7 @@ The config file is bundled with the package. To find and edit it:
 ```bash
 # Find config location
 uv tool dir
-# Then edit: <tool_dir>/vastwrap/lib/python3.x/site-packages/vastai_connect/default_config.yaml
+# Then edit: <tool_dir>/vastai-connect/lib/python3.x/site-packages/vastai_connect/default_config.yaml
 ```
 
 ### Environment Variable Overrides

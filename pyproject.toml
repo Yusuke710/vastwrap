@@ -1,5 +1,5 @@
 [project]
-name = "vastwrap"
+name = "vastai-connect"
 version = "0.1.0"
 description = "CLI wrapper for vastai - simplifies GPU rental workflow"
 readme = "README.md"
@@ -20,5 +20,3 @@ vastai-connect = "vastai_connect.cli:main"
 requires = ["uv_build>=0.8.0,<0.9"]
 build-backend = "uv_build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/vastai_connect"]
