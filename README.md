@@ -9,8 +9,11 @@ CLI wrapper for [Vast.ai](https://vast.ai) that simplifies GPU rental workflow. 
 uv tool install vastai
 vastai set api-key <Enter your API key from https://cloud.vast.ai/manage-keys/>  
 
-# Install vastai-connect
+# Install vastwrap
 uv tool install git+https://github.com/Yusuke710/vastwrap.git
+
+# Update to latest version
+uv tool upgrade vastwrap
 ```
 
 ## SSH Key Setup

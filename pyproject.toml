@@ -1,5 +1,5 @@
 [project]
-name = "vastai-connect"
+name = "vastwrap"
 version = "0.1.0"
 description = "CLI wrapper for vastai - simplifies GPU rental workflow"
 readme = "README.md"
