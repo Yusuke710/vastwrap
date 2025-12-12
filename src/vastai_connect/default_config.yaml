@@ -6,3 +6,11 @@ gpu_types:
   - H200
 
 image: vastai/pytorch:latest
+
+# Connection mode: ssh or ide
+# Override with env var: VAST_MODE
+connect_mode: ssh
+
+# IDE command for remote connection (code, cursor, etc.)
+# Override with env var: VAST_IDE
+ide: code

@@ -1,10 +1,14 @@
 """Instance management - create, wait, ssh, destroy."""
 
 import json
+import re
 import subprocess
 import time
+from pathlib import Path
 
 from .config import get_startup_script
+
+SSH_CONFIG_HOST = "vast-gpu"
 
 
 def create_instance(offer_id: int, image: str) -> int:
@@ -136,3 +140,62 @@ def destroy_instance(instance_id: int) -> bool:
         text=True,
     )
     return result.returncode == 0
+
+
+def update_ssh_config_for_instance(instance_id: int) -> None:
+    """Update ~/.ssh/config with instance details for easy reconnection."""
+    ssh_cmd = get_ssh_command(instance_id)
+    # ssh_cmd is like: ["ssh", "-p", "17538", "root@ssh6.vast.ai"]
+    port = ssh_cmd[2]
+    user, host = ssh_cmd[3].split("@")
+
+    # Validate inputs (no whitespace/newlines that could inject config)
+    for name, val in [("host", host), ("user", user), ("port", port)]:
+        if not val or any(c in val for c in " \t\n\r"):
+            raise ValueError(f"Invalid SSH {name}: {val!r}")
+
+    ssh_dir = Path.home() / ".ssh"
+    ssh_dir.mkdir(mode=0o700, exist_ok=True)
+    config_path = ssh_dir / "config"
+    tmp_path = ssh_dir / "config.tmp"
+
+    new_block = f"""Host {SSH_CONFIG_HOST}
+    HostName {host}
+    Port {port}
+    User {user}
+    StrictHostKeyChecking accept-new
+"""
+
+    if config_path.exists():
+        content = config_path.read_text()
+        pattern = rf"Host {SSH_CONFIG_HOST}\n(?:[ \t]+\S+.*\n)*"
+        if re.search(pattern, content):
+            content = re.sub(pattern, new_block, content)
+        else:
+            content = content.rstrip() + "\n\n" + new_block
+    else:
+        content = new_block
+
+    # Atomic write + always enforce permissions
+    tmp_path.write_text(content)
+    tmp_path.chmod(0o600)
+    tmp_path.rename(config_path)
+
+    print(f"SSH config updated: ssh {SSH_CONFIG_HOST}")
+
+
+def open_ide(ide_command: str) -> bool:
+    """Open IDE with remote SSH connection. Returns True on success.
+
+    Assumes update_ssh_config_for_instance() was already called.
+    """
+    # Use SSH config alias - VS Code reads port from config
+    cmd = [ide_command, "--remote", f"ssh-remote+{SSH_CONFIG_HOST}", "/root"]
+
+    print(f"Opening {ide_command}: {' '.join(cmd)}")
+    try:
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except FileNotFoundError:
+        print(f"Error: '{ide_command}' not found. Install it or add to PATH.")
+        return False

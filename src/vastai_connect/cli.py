@@ -4,10 +4,10 @@ import sys
 
 import questionary
 
-from .config import load_config
+from .config import get_connect_mode, get_ide_command, load_config
 from .instance import (
-    create_instance, destroy_instance, get_ssh_command,
-    ssh_to_instance, wait_for_instance, wait_for_ssh,
+    create_instance, destroy_instance, get_ssh_command, open_ide,
+    ssh_to_instance, update_ssh_config_for_instance, wait_for_instance, wait_for_ssh,
 )
 from .offers import filter_offers, search_offers, select_offer
 
@@ -42,12 +42,15 @@ def main() -> int:
         print(f"Error creating instance: {e}")
         return 1
 
-    return _run_session(instance_id)
+    return _run_session(instance_id, config)
 
 
-def _run_session(instance_id: int) -> int:
-    """Run SSH session with cleanup on exit."""
+def _run_session(instance_id: int, config: dict) -> int:
+    """Run session with cleanup on exit."""
     exit_code = 0
+    connect_mode = get_connect_mode(config)
+    ide_command = get_ide_command(config)
+
     try:
         # Step 3: Wait for instance to be ready
         if not wait_for_instance(instance_id):
@@ -59,10 +62,18 @@ def _run_session(instance_id: int) -> int:
             print(f"SSH failed to become ready. Try manually: {' '.join(get_ssh_command(instance_id))}")
             return 1
 
-        # Step 5: SSH into instance
-        print("\nConnecting to instance...")
-        exit_code = ssh_to_instance(instance_id)
-        print(f"\nSSH session ended (exit code: {exit_code})")
+        # Step 5: Always update SSH config so user can reconnect later
+        update_ssh_config_for_instance(instance_id)
+
+        # Step 6: Connect based on mode
+        print(f"\nConnecting (mode: {connect_mode})...")
+
+        if connect_mode == "ide":
+            open_ide(ide_command)
+            input("\nPress Enter when you're finished with the IDE session...")
+        else:  # ssh mode
+            exit_code = ssh_to_instance(instance_id)
+            print(f"\nSSH session ended (exit code: {exit_code})")
     except KeyboardInterrupt:
         print("\n\nInterrupted!")
         exit_code = 130

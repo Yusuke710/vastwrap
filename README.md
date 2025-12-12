@@ -39,17 +39,27 @@ This will:
 
 ## Configuration
 
-Customize the [config](src/vastai_connect/default_config.yaml) file to set GPU types you want to rent and the Docker image for the instance:
+The config file is bundled with the package. To find and edit it:
 
-```yaml
-gpu_types:
-  - RTX 3090
-  - RTX 4090
-  - A100
-  - H100
-  - H200
+```bash
+# Find config location
+uv tool dir
+# Then edit: <tool_dir>/vastwrap/lib/python3.x/site-packages/vastai_connect/default_config.yaml
+```
 
-image: vastai/pytorch:latest
+### Environment Variable Overrides
+
+Override config without editing the file:
+
+```bash
+# Use VS Code/Cursor instead of SSH
+VAST_MODE=ide vastai-connect
+
+# Use Cursor as IDE
+VAST_IDE=cursor vastai-connect
+
+# Open both IDE and SSH
+VAST_MODE=both vastai-connect
 ```
 
 ## What gets installed on the instance
