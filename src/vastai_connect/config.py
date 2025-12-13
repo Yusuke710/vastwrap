@@ -36,3 +36,16 @@ def get_connect_mode(config: dict) -> str:
 def get_ide_command(config: dict) -> str:
     """Get IDE command: env var > config > default."""
     return os.environ.get("VAST_IDE") or config.get("ide", "code")
+
+
+def get_disk_size(config: dict) -> int:
+    """Get disk size in GB: env var > config > default (10GB)."""
+    env_disk = os.environ.get("VAST_DISK", "")
+    if env_disk.isdigit() and int(env_disk) > 0:
+        return int(env_disk)
+
+    config_disk = config.get("disk", 10)
+    if isinstance(config_disk, int) and config_disk > 0:
+        return config_disk
+
+    return 10

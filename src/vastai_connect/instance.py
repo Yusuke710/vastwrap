@@ -11,8 +11,9 @@ from .config import get_startup_script
 SSH_CONFIG_HOST = "vast-gpu"
 
 
-def create_instance(offer_id: int, image: str) -> int:
+def create_instance(offer_id: int, image: str, disk_size: int) -> int:
     """Create a new instance and return the instance ID."""
+    print(f"Creating instance with {disk_size}GB disk...")
     onstart_cmd = get_startup_script()
 
     result = subprocess.run(
@@ -23,6 +24,8 @@ def create_instance(offer_id: int, image: str) -> int:
             str(offer_id),
             "--image",
             image,
+            "--disk",
+            str(disk_size),
             "--onstart-cmd",
             onstart_cmd,
             "--ssh",

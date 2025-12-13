@@ -58,8 +58,11 @@ VAST_MODE=ide vastai-connect
 # Use Cursor as IDE
 VAST_IDE=cursor vastai-connect
 
-# Open both IDE and SSH
-VAST_MODE=both vastai-connect
+# Set disk size in GB (default: 10GB, cannot be resized after creation)
+VAST_DISK=100 vastai-connect
+
+# Combine multiple options
+VAST_MODE=ide VAST_DISK=200 vastai-connect
 ```
 
 ## What gets installed on the instance

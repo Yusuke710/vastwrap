@@ -7,10 +7,11 @@ import subprocess
 import questionary
 
 
-def search_offers() -> list[dict]:
+def search_offers(disk_size: int = 10) -> list[dict]:
     """Search for available GPU offers using vastai CLI."""
     result = subprocess.run(
-        ["vastai", "search", "offers", "--raw"], capture_output=True, text=True
+        ["vastai", "search", "offers", "--storage", str(disk_size), "--raw"],
+        capture_output=True, text=True,
     )
     if result.returncode != 0:
         raise RuntimeError(f"Failed to search offers: {result.stderr}")

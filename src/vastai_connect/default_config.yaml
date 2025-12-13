@@ -14,3 +14,7 @@ connect_mode: ssh
 # IDE command for remote connection (code, cursor, etc.)
 # Override with env var: VAST_IDE
 ide: code
+
+# Disk size in GB (cannot be resized after creation)
+# Override with env var: VAST_DISK
+disk: 10

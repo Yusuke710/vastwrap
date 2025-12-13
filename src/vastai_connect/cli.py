@@ -4,7 +4,7 @@ import sys
 
 import questionary
 
-from .config import get_connect_mode, get_ide_command, load_config
+from .config import get_connect_mode, get_disk_size, get_ide_command, load_config
 from .instance import (
     create_instance, destroy_instance, get_ssh_command, open_ide,
     ssh_to_instance, update_ssh_config_for_instance, wait_for_instance, wait_for_ssh,
@@ -15,11 +15,12 @@ from .offers import filter_offers, search_offers, select_offer
 def main() -> int:
     """Main entry point."""
     config = load_config()
+    disk_size = get_disk_size(config)
 
     # Step 1: Search and select offer
     print("Searching for available GPU instances...")
     try:
-        offers = search_offers()
+        offers = search_offers(disk_size)
     except Exception as e:
         print(f"Error: {e}\nMake sure vastai is installed and configured (run: vastai setup <your API key>)")
         return 1
@@ -36,7 +37,7 @@ def main() -> int:
     # Step 2: Create instance
     print(f"\nCreating instance with {offer.get('gpu_name', 'GPU')}...")
     try:
-        instance_id = create_instance(offer["id"], config["image"])
+        instance_id = create_instance(offer["id"], config["image"], disk_size)
         print(f"Instance created: {instance_id}")
     except Exception as e:
         print(f"Error creating instance: {e}")
