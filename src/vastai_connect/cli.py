@@ -4,7 +4,7 @@ import sys
 
 import questionary
 
-from .config import get_connect_mode, get_disk_size, get_ide_command, load_config
+from .config import get_connect_mode, get_disk_size, load_config
 from .instance import (
     create_instance, destroy_instance, get_ssh_command, open_ide,
     ssh_to_instance, update_ssh_config_for_instance, wait_for_instance, wait_for_ssh,
@@ -50,7 +50,6 @@ def _run_session(instance_id: int, config: dict) -> int:
     """Run session with cleanup on exit."""
     exit_code = 0
     connect_mode = get_connect_mode(config)
-    ide_command = get_ide_command(config)
 
     try:
         # Step 3: Wait for instance to be ready
@@ -69,10 +68,11 @@ def _run_session(instance_id: int, config: dict) -> int:
         # Step 6: Connect based on mode
         print(f"\nConnecting (mode: {connect_mode})...")
 
-        if connect_mode == "ide":
+        if connect_mode in ("vscode", "cursor"):
+            ide_command = "code" if connect_mode == "vscode" else "cursor"
             open_ide(ide_command)
             input("\nPress Enter when you're finished with the IDE session...")
-        else:  # ssh mode
+        else:  # cli mode
             exit_code = ssh_to_instance(instance_id)
             print(f"\nSSH session ended (exit code: {exit_code})")
     except KeyboardInterrupt:

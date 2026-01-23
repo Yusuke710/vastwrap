@@ -20,7 +20,7 @@ uv tool upgrade vastai-connect
 
 Add your SSH public key to Vast.ai so you can connect to instances:
 
-1. Copy your public key: `cat ~/.ssh/id_ed25519.pub` (or `~/.ssh/id_rsa.pub`)
+1. Copy your public key: `cat ~/.ssh/<your public key>.pub` or generate your own.
 2. Go to https://cloud.vast.ai/manage-keys/ → SSH Keys section
 3. Paste your public key and save
 
@@ -37,6 +37,24 @@ This will:
 4. SSH into the instance
 5. On exit, prompt to destroy the instance (default: yes)
 
+### Environment Variable Overrides
+
+Override config without editing the file:
+
+```bash
+# Use VS Code instead of CLI
+VAST_MODE=vscode vastai-connect
+
+# Use Cursor instead of CLI
+VAST_MODE=cursor vastai-connect
+
+# Set disk size in GB (default: 10GB, cannot be resized after creation)
+VAST_DISK=100 vastai-connect
+
+# Combine options
+VAST_MODE=vscode VAST_DISK=200 vastai-connect
+```
+
 ## Configuration
 
 The config file is bundled with the package. To find and edit it:
@@ -47,23 +65,6 @@ uv tool dir
 # Then edit: <tool_dir>/vastai-connect/lib/python3.x/site-packages/vastai_connect/default_config.yaml
 ```
 
-### Environment Variable Overrides
-
-Override config without editing the file:
-
-```bash
-# Use VS Code/Cursor instead of SSH
-VAST_MODE=ide vastai-connect
-
-# Use Cursor as IDE
-VAST_IDE=cursor vastai-connect
-
-# Set disk size in GB (default: 10GB, cannot be resized after creation)
-VAST_DISK=100 vastai-connect
-
-# Combine multiple options
-VAST_MODE=ide VAST_DISK=200 vastai-connect
-```
 
 ## What gets installed on the instance
 

@@ -7,7 +7,7 @@ import yaml
 
 _MODULE_DIR = Path(__file__).parent
 
-VALID_CONNECT_MODES = ("ssh", "ide")
+VALID_CONNECT_MODES = ("cli", "vscode", "cursor")
 
 
 def get_startup_script() -> str:
@@ -26,16 +26,11 @@ def get_connect_mode(config: dict) -> str:
     if env_mode in VALID_CONNECT_MODES:
         return env_mode
 
-    config_mode = config.get("connect_mode", "ssh").lower()
+    config_mode = config.get("connect_mode", "cli").lower()
     if config_mode in VALID_CONNECT_MODES:
         return config_mode
 
-    return "ssh"
-
-
-def get_ide_command(config: dict) -> str:
-    """Get IDE command: env var > config > default."""
-    return os.environ.get("VAST_IDE") or config.get("ide", "code")
+    return "cli"
 
 
 def get_disk_size(config: dict) -> int:
